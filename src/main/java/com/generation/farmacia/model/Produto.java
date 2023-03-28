@@ -1,5 +1,4 @@
 package com.generation.farmacia.model;
-
 import java.math.BigDecimal;
 
 import javax.persistence.Entity;
@@ -26,24 +25,6 @@ public class Produto {
 	@NotBlank(message = "O nome do produto não pode ficar vazio")
 	@Size(min = 3, max = 100, message = "O nome deve conter no mínimo 3 e no máximo 100 caracteres.")
 	private String nome;
-	
-	@NotBlank(message = "O nome do produto não pode ficar vazio")
-	@Size(min = 3, max = 100, message = "O nome deve conter no mínimo 3 e no máximo 100 caracteres.")
-	private String nomeComercial;
-	
-	@ManyToOne
-	@JsonIgnoreProperties("produtos")
-	private Categoria categoria;
-
-	
-
-	public String getNomeComercial() {
-		return nomeComercial;
-	}
-
-	public void setNomeComercial(String nomeComercial) {
-		this.nomeComercial = nomeComercial;
-	}
 
 	@NotNull(message = "O preço do produto não pode ficar vazio")
 	private BigDecimal preco;
@@ -55,6 +36,14 @@ public class Produto {
 
 	@NotBlank(message = "A foto do produto não pode ficar vazia")
 	private String foto;
+	
+	@ManyToOne
+	@JsonIgnoreProperties("produto")
+	private Categoria categoria;
+	
+	@ManyToOne
+	@JsonIgnoreProperties("produto")
+	private Usuario usuario;
 	
 	/*Métodos Get e Set*/
 
@@ -110,7 +99,16 @@ public class Produto {
 		return categoria;
 	}
 
+
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
+	}
+	
+	public Usuario getUsuario() {
+		return usuario;
+	}
+	
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 }

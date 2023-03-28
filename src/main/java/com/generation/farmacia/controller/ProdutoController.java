@@ -22,7 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.generation.farmacia.model.Produto;
 import com.generation.farmacia.repository.CategoriaRepository;
-//import com.generation.farmacia.repository.CategoriaRepository;
 import com.generation.farmacia.repository.ProdutoRepository;
 
 @RestController
@@ -43,8 +42,7 @@ public class ProdutoController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Produto> getById(@PathVariable Long id) {
-		return produtoRepository.findById(id)
-				.map(resposta -> ResponseEntity.ok(resposta))
+		return produtoRepository.findById(id).map(resposta -> ResponseEntity.ok(resposta))
 				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
 
@@ -52,27 +50,27 @@ public class ProdutoController {
 	public ResponseEntity<List<Produto>> getByNome(@PathVariable String nome) {
 		return ResponseEntity.ok(produtoRepository.findAllByNomeContainingIgnoreCase(nome));
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<Produto> post(@Valid @RequestBody Produto produto){
+	public ResponseEntity<Produto> post(@Valid @RequestBody Produto produto) {
 		if (categoriaRepository.existsById(produto.getCategoria().getId()))
 			return ResponseEntity.status(HttpStatus.CREATED)
-				.body(produtoRepository.save(produto));
-		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+					.body(produtoRepository.save(produto));
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(produtoRepository.save(produto));
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<Produto> put(@Valid @RequestBody Produto produto){
-		if (produtoRepository.existsById(produto.getId())){
+	public ResponseEntity<Produto> put(@Valid @RequestBody Produto produto) {
+		if (produtoRepository.existsById(produto.getId())) {
+
+			if (categoriaRepository.existsById(produto.getCategoria().getId())) 
+				return ResponseEntity.status(HttpStatus.OK).body(produtoRepository.save(produto));
 			
-			if (categoriaRepository.existsById(produto.getCategoria().getId()))
-				return ResponseEntity.status(HttpStatus.OK)
-						.body(produtoRepository.save(produto));
-			
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		
+
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 
@@ -87,3 +85,4 @@ public class ProdutoController {
 		produtoRepository.deleteById(id);
 	}
 }
+
